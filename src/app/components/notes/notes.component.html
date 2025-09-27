@@ -1,0 +1,97 @@
+<div class="notes-container">
+  <!-- Header -->
+  <header class="app-header">
+    <h1>📝 My Notes App</h1>
+    <p class="notes-count">Total Notes: {{ getTotalNotes() }}</p>
+    <button class="btn btn-secondary btn-small" (click)="refreshNotes()" [disabled]="isLoading">
+      {{ isLoading ? '🔄 Loading...' : '🔄 Refresh' }}
+    </button>
+  </header>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="isLoading" class="loading-indicator">
+    <div class="spinner"></div>
+    <p>Processing request...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Create Note Section -->
+  <section class="create-section">
+    <button 
+      class="btn btn-primary" 
+      (click)="toggleCreateForm()"
+      [class.active]="isCreating">
+      {{ isCreating ? 'Cancel' : '+ Add New Note' }}
+    </button>
+
+    <div *ngIf="isCreating" class="create-form">
+      <div class="form-group">
+        <label for="noteTitle">Title:</label>
+        <input 
+          id="noteTitle"
+          type="text" 
+          [(ngModel)]="newNoteTitle" 
+          placeholder="Enter note title..."
+          class="form-input"
+          maxlength="255">
+      </div>
+
+      <div class="form-group">
+        <label for="noteContent">Content:</label>
+        <textarea 
+          id="noteContent"
+          [(ngModel)]="newNoteContent" 
+          placeholder="Write your note here..."
+          class="form-textarea"
+          rows="4"
+          maxlength="1024"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button 
+          class="btn btn-success" 
+          (click)="createNote()"
+          [disabled]="!isFormValid()">
+          Save Note
+        </button>
+        <button 
+          class="btn btn-secondary" 
+          (click)="toggleCreateForm()">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Notes List -->
+  <section class="notes-list">
+    <div *ngIf="notes.length === 0" class="empty-state">
+      <p>📄 No notes yet. Create your first note!</p>
+    </div>
+
+    <div *ngFor="let note of notes" class="note-card">
+      <div class="note-header">
+        <h3 class="note-title">{{ note.title }}</h3>
+        <button 
+          class="btn btn-danger btn-small" 
+          (click)="deleteNote(note.id)"
+          title="Delete Note">
+            X
+        </button>
+      </div>
+      
+      <div class="note-content">
+        <p>{{ note.content }}</p>
+      </div>
+      
+      <div class="note-footer">
+        <small class="note-date">Created: {{ note.getFormattedDate() }}</small>
+        <small class="note-id">ID: {{ note.id }}</small>
+      </div>
+    </div>
+  </section>
+</div>
